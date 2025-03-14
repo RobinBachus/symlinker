@@ -1,8 +1,8 @@
 use std::fmt::Display;
 use std::path::PathBuf;
 use serde::{Serialize, Deserialize};
-use serde::ser::Error as _;
-use crate::file_utils::{FileUtils, ProjectDirType};
+use serde::ser::Error as e;
+use crate::utils::file_utils::{FileUtils, ProjectDirType};
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {

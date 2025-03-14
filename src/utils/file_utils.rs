@@ -24,13 +24,11 @@ impl FileUtils {
     }
 
     /// Parses a file and returns the data as a Result<T, Error>
-    ///
     /// # Arguments
-    ///
     /// * `dir_type`: What directory to look in
     /// * `file_name`: The name of the file to parse (including extension)
-    ///
-    /// returns: Result<T, Error>
+    /// # Returns
+    /// * `Result<T, Error>`: The data from the file
     pub(crate) fn parse_file< T: Default + Serialize + for<'a> Deserialize<'a>>(&self, dir_type: ProjectDirType, file_name: &str) -> Result<T, serde_json::Error> {
         let dir= match dir_type {
             ProjectDirType::Data => self.project_dirs.data_dir(),
@@ -49,9 +47,7 @@ impl FileUtils {
     }
 
     /// Saves a file with the given data
-    ///
     /// # Arguments
-    ///
     /// * `dir_type`: What directory to save the file in
     /// * `file_name`: The name of the file to save (including extension)
     /// * `data`: The data to save

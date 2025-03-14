@@ -1,8 +1,10 @@
 use serde_json::Error;
-use crate::config::Config;
-use crate::file_utils::FileUtils;
-use crate::managed_link::ManagedLink;
-use crate::managed_link_list::ManagedLinkList;
+use crate::files::{
+    config::Config,
+    managed_link::ManagedLink,
+    managed_link_list::ManagedLinkList
+};
+use crate::utils::file_utils::FileUtils;
 
 pub struct Application {
     pub managed_link_list: ManagedLinkList,

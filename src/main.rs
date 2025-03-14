@@ -1,11 +1,16 @@
 use colored::Colorize;
 use application::Application;
+use files::managed_link;
 
-mod file_utils;
-mod managed_link;
-mod config;
 mod application;
-mod managed_link_list;
+mod files {
+    pub mod managed_link;
+    pub mod managed_link_list;
+    pub mod config;
+}
+mod utils {
+    pub mod file_utils;
+}
 
 fn main() {
     let app = Application::new();

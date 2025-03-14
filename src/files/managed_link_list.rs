@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use crate::file_utils::{FileUtils, ProjectDirType};
-use crate::managed_link::ManagedLink;
+use crate::utils::file_utils::{FileUtils, ProjectDirType};
+use crate::files::managed_link::ManagedLink;
 
 #[derive(Serialize, Deserialize)]
 pub struct ManagedLinkList {
