@@ -1,0 +1,62 @@
+{
+	"version": "2.0.0",
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "args",
+			"description": "Arguments to pass to the program",
+			"default": ""
+		}
+	],
+	"tasks": [
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "cargo",
+			"args": ["build"],
+			"group": {
+				"kind": "build"
+			},
+			"presentation": {
+				"focus": false,
+				"reveal": "silent",
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "run - h",
+			"type": "shell",
+			"command": "${cwd}/target/debug/SymLinker.exe",
+			"args": ["h"],
+			"dependsOn": ["build"],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"reveal": "always"
+			}
+		},
+		{
+			"label": "run - a",
+			"type": "shell",
+			"command": "${cwd}/target/debug/SymLinker.exe",
+			"args": ["a", "${input:args}"],
+
+			"dependsOn": ["build"],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"reveal": "always"
+			}
+		}
+	]
+}

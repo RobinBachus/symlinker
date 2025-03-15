@@ -1,8 +1,9 @@
+use crate::enums::project_dir_type::ProjectDirType;
+use crate::utils::file_utils::FileUtils;
+use serde::ser::Error as e;
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::path::PathBuf;
-use serde::{Serialize, Deserialize};
-use serde::ser::Error as e;
-use crate::utils::file_utils::{FileUtils, ProjectDirType};
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -23,10 +24,7 @@ impl Default for Config {
 
 impl Display for Config {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}", serde_json::to_string_pretty(self).unwrap()
-        )
+        write!(f, "{}", serde_json::to_string_pretty(self).unwrap())
     }
 }
 
@@ -47,10 +45,17 @@ impl Config {
             return Ok(config);
         }
 
-        Err(serde_json::error::Error::custom(format!("Invalid config file: {}" , res.err().unwrap())))
+        Err(serde_json::error::Error::custom(format!(
+            "Invalid config file: {}",
+            res.err().unwrap()
+        )))
     }
 
     pub fn save(&self, file_utils: &FileUtils) {
         file_utils.save_file(ProjectDirType::Config, "config.json", self);
+    }
+
+    pub fn get_symlink_dir(&self) -> String {
+        self.default_symlink_dir.to_str().unwrap().to_string()
     }
 }
