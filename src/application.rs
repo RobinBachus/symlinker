@@ -51,7 +51,7 @@ impl Application {
         };
 
         println!(
-            "About to create managed link:\n\n{}\n\nContinue? [y/N]",
+            "About to create symbolic link:\n\n{}\n\nContinue? [y/N]",
             link
         );
 
