@@ -55,7 +55,7 @@ impl Config {
         file_utils.save_file(ProjectDirType::Config, "config.json", self);
     }
 
-    pub fn get_symlink_dir(&self) -> String {
-        self.default_symlink_dir.to_str().unwrap().to_string()
+    pub fn get_symlink_dir(&self) -> &str {
+        self.default_symlink_dir.to_str().unwrap()
     }
 }

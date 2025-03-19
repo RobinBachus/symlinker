@@ -34,11 +34,12 @@ impl Application {
 
     pub fn create_managed_link(&mut self, original_path: &String, mut target: String) {
         if target.is_empty() {
-            target = self.config.get_symlink_dir()
+            target.push_str(&self.config.get_symlink_dir());
         }
 
         // Symlinks follow the structure of the original path to ease navigation
-        target = target + "\\" + original_path.replace(":", "").as_str();
+        target.push_str("\\");
+        target.push_str(&original_path.replace(":", ""));
 
         let time = chrono::Local::now().to_string();
 

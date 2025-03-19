@@ -29,8 +29,11 @@ impl FileUtils {
             ProjectDirType::Config => self.project_dirs.config_dir(),
         };
 
+        // Create the directory if it doesn't exist
         std::fs::create_dir_all(&dir).unwrap();
         let file_path = dir.join(file_name);
+
+        // Create the file if it doesn't exist
         if !file_path.exists() {
             println!("Creating file: {}", file_path.display());
             let default: T = Default::default();
