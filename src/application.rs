@@ -1,5 +1,7 @@
 use crate::files::{config::Config, managed_link::ManagedLink, managed_link_list::ManagedLinkList};
-use crate::utils::file_utils::FileUtils;
+use crate::utils::file_utils::{self, FileUtils};
+use crate::utils::logger::Logger;
+use colored::Colorize;
 use serde_json::Error;
 
 pub struct Application {
@@ -12,6 +14,8 @@ impl Application {
     pub fn new() -> Result<Application, Error> {
         let file_utils = FileUtils::new();
         let config_res = Config::load(&file_utils);
+
+        Logger::clear_or_create_file(&file_utils).unwrap();
 
         if let Ok(config) = config_res {
             let managed_link_list = ManagedLinkList::load(&file_utils);
@@ -51,21 +55,44 @@ impl Application {
             last_modified: time.clone(),
         };
 
+        let sl_path = link.symlink_path.as_str();
+        let disk_name = sl_path.split_at(sl_path.find('\\').unwrap() + 1).0;
+        let disk_sizes = FileUtils::get_disk_size_info(&disk_name).unwrap();
+        let available_size = disk_sizes.0;
+        let total_size = disk_sizes.1;
+
         println!(
-            "About to create symbolic link:\n\n{}\n\nContinue? [y/N]",
-            link
+            "About to create symbolic link:\n\n{}\n\nThe symlink drive has {} of {} space left\n\nContinue? [y/N]",
+            link,
+            FileUtils::bytes_to_human_readable(available_size).cyan(),
+            FileUtils::bytes_to_human_readable(total_size).blue()
         );
+
+        let link_formatted = link.to_string().replace("\n", "\n\t");
+        Logger::log_to_file(
+            &self.file_utils,
+            &format!("About to create link:\n\t{link_formatted}"),
+        )
+        .unwrap();
 
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
 
         if input.trim().to_lowercase() != "y" {
             println!("Aborted.");
+            Logger::log_to_file(&self.file_utils, "Link creation aborted").unwrap();
             return;
         }
 
+        let link_id = link.id.clone();
         self.managed_link_list.managed_links.push(link);
         self.managed_link_list.save(&self.file_utils);
+
+        Logger::log_to_file(
+            &self.file_utils,
+            &format!("Created link with ID {}", link_id),
+        )
+        .unwrap();
 
         println!("Link created successfully.");
     }

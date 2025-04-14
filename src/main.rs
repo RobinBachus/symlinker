@@ -3,6 +3,7 @@ use std::{env::args, process::exit};
 use application::Application;
 use colored::Colorize;
 use enums::arg::Arg;
+use utils::logger::Logger;
 
 mod application;
 mod enums;
