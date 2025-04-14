@@ -52,7 +52,9 @@ impl Config {
     }
 
     pub fn save(&self, file_utils: &FileUtils) {
-        file_utils.save_file(ProjectDirType::Config, "config.json", self);
+        file_utils
+            .save_file(ProjectDirType::Config, "config.json", self)
+            .unwrap();
     }
 
     pub fn get_symlink_dir(&self) -> &str {

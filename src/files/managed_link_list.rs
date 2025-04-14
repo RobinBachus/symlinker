@@ -24,7 +24,9 @@ impl ManagedLinkList {
     }
 
     pub fn save(&self, file_utils: &FileUtils) {
-        file_utils.save_file(ProjectDirType::Data, "managed_links.json", self);
+        file_utils
+            .save_file(ProjectDirType::Data, "managed_links.json", self)
+            .unwrap();
     }
 
     pub fn get_last_id(&self) -> u32 {

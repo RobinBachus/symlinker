@@ -1,5 +1,5 @@
 use crate::files::{config::Config, managed_link::ManagedLink, managed_link_list::ManagedLinkList};
-use crate::utils::file_utils::{self, FileUtils};
+use crate::utils::file_utils::FileUtils;
 use crate::utils::logger::Logger;
 use colored::Colorize;
 use serde_json::Error;
