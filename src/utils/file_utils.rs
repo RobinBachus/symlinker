@@ -130,6 +130,56 @@ impl FileUtils {
         return format!("{m_size}tb");
     }
 
+    pub(crate) fn get_files_in_dir(path: &PathBuf, depth: u32) -> Result<Vec<PathBuf>, String> {
+        if depth >= 128 {
+            return Err(format!("File depth limit reached"));
+        }
+
+        if !path.is_dir() {
+            return Err(format!("Can only get files from a directory"));
+        }
+
+        let mut files: Vec<PathBuf> = vec![];
+
+        for entry in path
+            .read_dir()
+            .map_err(|e| format!("Failed to read directory '{}': {}", path.display(), e))?
+        {
+            if let Ok(entry) = entry {
+                // If entry is directory, recursively get files in entry
+                if entry.path().is_dir() {
+                    files.append(&mut {
+                        match FileUtils::get_files_in_dir(&entry.path(), depth + 1) {
+                            Ok(t) => t,
+                            Err(e) => {
+                                return Err(format!(
+                                    "Failed to get files in directory '{}': {}",
+                                    entry.path().display(),
+                                    e
+                                ));
+                            }
+                        }
+                    });
+                } else {
+                    files.push(entry.path());
+                }
+            }
+        }
+
+        return Ok(files);
+    }
+
+    pub(crate) fn path_to_relative(path: &PathBuf, pwd: &str) -> String {
+        format!(
+            "./{}",
+            path.to_str()
+                .expect("")
+                .trim_start_matches(pwd)
+                .trim_start_matches("\\")
+                .replace("\\", "/")
+        )
+    }
+
     fn resolve_file_path(&self, dir_type: ProjectDirType, file_name: &str) -> PathBuf {
         let dir = match dir_type {
             ProjectDirType::Data => self.project_dirs.data_dir(),

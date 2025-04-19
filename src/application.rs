@@ -1,8 +1,11 @@
-use crate::files::{config::Config, managed_link::ManagedLink, managed_link_list::ManagedLinkList};
+use crate::files::config::Config;
+use crate::files::managed_link::ManagedLink;
+use crate::files::managed_link_list::ManagedLinkList;
 use crate::utils::file_utils::FileUtils;
 use crate::utils::logger::Logger;
 use colored::Colorize;
 use serde_json::Error;
+use std::path::PathBuf;
 
 pub struct Application {
     pub managed_link_list: ManagedLinkList,
@@ -55,6 +58,8 @@ impl Application {
             last_modified: time.clone(),
         };
 
+        let files = FileUtils::get_files_in_dir(&PathBuf::from(original_path), 0).unwrap();
+
         let sl_path = link.symlink_path.as_str();
         let disk_name = sl_path.split_at(sl_path.find('\\').unwrap() + 1).0;
         let disk_sizes = FileUtils::get_disk_size_info(&disk_name).unwrap();
@@ -62,8 +67,9 @@ impl Application {
         let total_size = disk_sizes.1;
 
         println!(
-            "About to create symbolic link:\n\n{}\n\nThe symlink drive has {} of {} space left\n\nContinue? [y/N]",
+            "About to create symbolic link:\n\n{}\n\nThis will move {} files.\nThe symlink drive has {} of {} space left.\n\nList files to move? [y/N]",
             link,
+            files.len(),
             FileUtils::bytes_to_human_readable(available_size).cyan(),
             FileUtils::bytes_to_human_readable(total_size).blue()
         );
@@ -76,6 +82,22 @@ impl Application {
         .unwrap();
 
         let mut input = String::new();
+
+        std::io::stdin().read_line(&mut input).unwrap();
+
+        if input.trim().to_lowercase() == "y" {
+            println!("\nThese files will be moved:\n");
+
+            for file in files {
+                println!(
+                    "{}",
+                    FileUtils::path_to_relative(&file, &original_path).blue()
+                );
+            }
+        }
+
+        println!("\nCreate link? [y/N]");
+        input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
 
         if input.trim().to_lowercase() != "y" {
